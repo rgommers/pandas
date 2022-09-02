@@ -129,15 +129,6 @@ libs_sources = {
     'parsers': {'sources': [cython_sources['parsers.pyx'], 'src/parser/tokenizer.c', 'src/parser/io.c'],
                 'include_dirs': [klib_include, 'src'],
                 'deps': _khash_primitive_helper_dep},
-    'json': {'sources': ['src/ujson/python/ujson.c',
-                         'src/ujson/python/objToJSON.c',
-                         'src/ujson/python/date_conversions.c',
-                         'src/ujson/python/JSONtoObj.c',
-                         'src/ujson/lib/ultrajsonenc.c',
-                         'src/ujson/lib/ultrajsondec.c',
-                         'tslibs/src/datetime/np_datetime.c',
-                         'tslibs/src/datetime/np_datetime_strings.c'],
-             'include_dirs': [inc_datetime, 'src/ujson/lib', 'src/ujson/python']},
     'reduction': {'sources': ['reduction.pyx']},
     'ops': {'sources': ['ops.pyx']},
     'ops_dispatch': {'sources': ['ops_dispatch.pyx']},
@@ -161,6 +152,32 @@ foreach ext_name, ext_dict : libs_sources
         install: true
     )
 endforeach
+
+# Some deprecated NumPy API usage in ujson cannot easily be replaced
+# (to try, use: `c_args: '-DNPY_NO_DEPRECATED_API=NPY_1_9_API_VERSION'`),
+# so silence the build warnings for the time being.
+cc = meson.get_compiler('c')
+_cflag_Wno_cpp = cc.get_supported_arguments('-Wno-cpp')
+
+py.extension_module(
+    'json',
+    ['src/ujson/python/ujson.c',
+     'src/ujson/python/objToJSON.c',
+     'src/ujson/python/date_conversions.c',
+     'src/ujson/python/JSONtoObj.c',
+     'src/ujson/lib/ultrajsonenc.c',
+     'src/ujson/lib/ultrajsondec.c',
+     'tslibs/src/datetime/np_datetime.c',
+     'tslibs/src/datetime/np_datetime_strings.c'
+    ],
+    c_args: _cflag_Wno_cpp,
+    include_directories: [
+      inc_np, inc_datetime, 'src/ujson/lib', 'src/ujson/python'
+    ],
+    dependencies: ext_dict.get('deps', ''),
+    subdir: 'pandas/_libs',
+    install: true
+)
 
 py.install_sources('__init__.py',
                     pure: false,
