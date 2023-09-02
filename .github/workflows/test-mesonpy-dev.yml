@@ -94,9 +94,10 @@ jobs:
       with:
         environment-file: ci/deps/${{ matrix.env_file }}
 
-    - name: Install meson-python dev version
-      run: |
-        python -m pip install git+https://github.com/mesonbuild/meson-python.git@main
+#   - name: Install meson-python dev version
+#     run: |
+#       # python -m pip install git+https://github.com/mesonbuild/meson-python.git@main
+#       python -m pip install git+https://github.com/mesonbuild/meson-python.git@refs/pull/467/head
 
     - name: Build Pandas
       id: build
