@@ -4,9 +4,14 @@ on:
   push:
     branches:
       - ci-mesonpython
-    paths-ignore:
-      - "doc/**"
-      - "web/**"
+  schedule:
+  #          ┌───────────── minute (0 - 59)
+  #          │  ┌───────────── hour (0 - 23)
+  #          │  │ ┌───────────── day of the month (1 - 31)
+  #          │  │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+  #          │  │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+  #          │  │ │ │ │
+    - cron: "9  9 * * 6"
 
 permissions:
   contents: read
@@ -21,7 +26,7 @@ jobs:
     strategy:
       matrix:
         env_file: [actions-311.yaml]
-    name: ${{ matrix.name }}
+    name: meson-python from git branch
     env:
       PATTERN: ${{ matrix.pattern }}
       EXTRA_APT: ''
