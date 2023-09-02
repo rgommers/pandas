@@ -102,8 +102,8 @@ jobs:
     - name: Build Pandas
       id: build
       uses: ./.github/actions/build_pandas
-      with:
-        editable: false
+#     with:
+#       editable: false
 
     - name: Test (not single_cpu)
       uses: ./.github/actions/run-tests
