@@ -182,13 +182,6 @@ select = "*-musllinux*"
 before-test = "apk update && apk add musl-locales"
 
 [[tool.cibuildwheel.overrides]]
-select = "*-win*"
-# We test separately for Windows, since we use
-# the windowsservercore docker image to check if any dlls are
-# missing from the wheel
-test-command = ""
-
-[[tool.cibuildwheel.overrides]]
 # Don't strip wheels on macOS.
 # macOS doesn't support stripping wheels with linker
 # https://github.com/MacPython/numpy-wheels/pull/87#issuecomment-624878264
